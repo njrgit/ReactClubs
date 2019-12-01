@@ -15,7 +15,8 @@ namespace Application.Clubs
             public string Name { get; set; }
             public string LeagueName { get; set; }
             public string StadiumName { get; set; }
-            public DateTime? DateEstablished { get; set; }
+            public DateTime? DateEstablished { get; set; }        
+            public string ShortName {get; set;}
 
         }
 
@@ -45,6 +46,7 @@ namespace Application.Clubs
                 club.LeagueName = request.LeagueName ?? club.LeagueName;
                 club.StadiumName = request.StadiumName ?? club.StadiumName;
                 club.DateEstablished = request.DateEstablished ?? club.DateEstablished;
+                club.ShortName = request.ShortName ?? club.ShortName;
 
                 var success = await _context.SaveChangesAsync() > 0;
 

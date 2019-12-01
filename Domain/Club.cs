@@ -8,5 +8,6 @@ namespace Domain
         public string LeagueName { get; set; }
         public string StadiumName { get; set; }
         public DateTime DateEstablished { get; set; }
+        public string ShortName {get; set;}
     }
 }

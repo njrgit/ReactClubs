@@ -15,7 +15,8 @@ namespace Application.Clubs
             public string Name { get; set; }
             public string LeagueName { get; set; }
             public string StadiumName { get; set; }
-            public DateTime DateEstablished { get; set; }
+            public DateTime DateEstablished { get; set; }        
+            public string ShortName {get; set;}
         }
 
         public class Handler : IRequestHandler<Command>
@@ -35,7 +36,8 @@ namespace Application.Clubs
                     Name = request.Name,
                     LeagueName = request.LeagueName,
                     StadiumName = request.StadiumName,
-                    DateEstablished = request.DateEstablished
+                    DateEstablished = request.DateEstablished,
+                    ShortName = request.ShortName
                 };
 
                 _context.Clubs.Add(club);
