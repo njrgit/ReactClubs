@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Container } from "semantic-ui-react";
-import axios from "axios";
 import { IClub } from "../models/clubs";
 import { NavBar } from "../../features/nav/navbar";
 import { ClubDashboard } from "../../features/activities/dashboard/ClubDashboard";
+import agent from "../api/agent";
 
 const App = () => {
   const [clubs, setClubs] = useState<IClub[]>([]);
@@ -33,14 +33,15 @@ const App = () => {
     setEditMode(false);
   };
 
-  const handleDeleteClub = (id : string) => {
-    setClubs([...clubs.filter(c => c.id !== id)])
-  }
+  const handleDeleteClub = (id: string) => {
+    setClubs([...clubs.filter(c => c.id !== id)]);
+  };
 
   useEffect(() => {
-    axios.get<IClub[]>("http://localhost:5000/api/clubs").then(response => {
+    agent.Clubs.list().then(response => {
       let clubs: IClub[] = [];
-      response.data.forEach(club => {
+
+      response.forEach((club) => {
         club.dateEstablished = club.dateEstablished.split(".")[0];
         clubs.push(club);
       });
@@ -61,7 +62,7 @@ const App = () => {
           setSelectedClub={setSelectedClub}
           createNewClub={handleCreateNewClub}
           editExistingClub={handleEditExistingClub}
-          deleteClub ={handleDeleteClub}
+          deleteClub={handleDeleteClub}
         />
       </Container>
     </Fragment>
