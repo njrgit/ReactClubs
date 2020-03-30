@@ -1,14 +1,16 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { Item, Image, Button, Segment } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
 
 interface IProps {
   clubs: IClub[];
   selectClub: (id: string) => void;
-  deleteClub : (id : string) => void;
+  deleteClub : (event:SyntheticEvent<HTMLButtonElement>,id : string) => void;
+  submitting : boolean
+  target: string
 }
 
-export const ClubList: React.FC<IProps> = ({ clubs, selectClub, deleteClub }) => {
+export const ClubList: React.FC<IProps> = ({ clubs, selectClub, deleteClub, submitting, target }) => {
   return (
     <Segment clearing>
       <Item.Group divided>
@@ -23,8 +25,8 @@ export const ClubList: React.FC<IProps> = ({ clubs, selectClub, deleteClub }) =>
               </Item.Description>
               <Item.Meta>{club.dateEstablished}</Item.Meta>
               <Item.Extra>
-                <Button onClick={() => selectClub(club.id)} floated="right" basic color="blue" content="View" />
-                <Button onClick={() => deleteClub(club.id)} floated="right" basic color="red" content="Delete" />
+                <Button  onClick={() => selectClub(club.id)} floated="right" basic color="blue" content="View" />
+                <Button name={club.id} loading={target === club.id && submitting} onClick={(e) => deleteClub(e,club.id)} floated="right" basic color="red" content="Delete" />
               </Item.Extra>
             </Item.Content>
           </Item>

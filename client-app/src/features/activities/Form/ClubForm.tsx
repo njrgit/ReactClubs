@@ -8,13 +8,15 @@ interface IProps {
   club: IClub;
   createNewClub: (club : IClub) => void;
   editExistingClub: (club: IClub) => void;
+  submitting : boolean;
 }
 
 export const ClubForm: React.FC<IProps> = ({
   setEditMode,
   club: initialFormState,
   createNewClub,
-  editExistingClub
+  editExistingClub,
+  submitting
 }) => {
   const initialiseForm = () => {
     if (initialFormState) {
@@ -90,7 +92,7 @@ export const ClubForm: React.FC<IProps> = ({
             value={club.dateEstablished}
           />
         </Form.Field>
-        <Button  floated="right" type="submit" positive>
+        <Button loading={submitting} floated="right" type="submit" positive>
           Submit
         </Button>
         <Button onClick={() => setEditMode(false)} floated="right">

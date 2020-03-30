@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import { Grid } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
 import { ClubList } from "./ClubList";
@@ -14,7 +14,9 @@ interface IProps {
   setSelectedClub: (club: IClub | null) => void;
   createNewClub: (club: IClub) => void;
   editExistingClub: (club: IClub) => void;
-  deleteClub : (id : string) => void;
+  deleteClub : (event: SyntheticEvent<HTMLButtonElement>,id : string) => void;
+  submitting : boolean;
+  target: string;
 }
 
 export const ClubDashboard: React.FC<IProps> = ({
@@ -26,12 +28,14 @@ export const ClubDashboard: React.FC<IProps> = ({
   setSelectedClub,
   createNewClub,
   editExistingClub,
-  deleteClub
+  deleteClub,
+  submitting,
+  target
 }) => {
   return (
     <Grid>
       <Grid.Column width={10}>
-        <ClubList clubs={clubs} selectClub={selectClub} deleteClub={deleteClub} />
+        <ClubList clubs={clubs} selectClub={selectClub} deleteClub={deleteClub} submitting ={submitting} target ={target} />
       </Grid.Column>
       <Grid.Column width={6}>
         {selectedClub && !editMode && (
@@ -43,11 +47,12 @@ export const ClubDashboard: React.FC<IProps> = ({
         )}
         {editMode && (
           <ClubForm
-            key={selectedClub && selectedClub.id || 0}
+            key={(selectedClub && selectedClub.id )|| 0}
             setEditMode={setEditMode}
             club={selectedClub!}
             createNewClub={createNewClub}
             editExistingClub={editExistingClub}
+            submitting ={submitting}
           />
         )}
       </Grid.Column>
