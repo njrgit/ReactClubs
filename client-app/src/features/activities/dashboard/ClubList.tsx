@@ -1,20 +1,24 @@
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useContext } from "react";
 import { Item, Image, Button, Segment } from "semantic-ui-react";
-import { IClub } from "../../../app/models/clubs";
+import { observer } from "mobx-react-lite";
+import ClubStore from "../../../app/stores/clubStore";
 
 interface IProps {
-  clubs: IClub[];
-  selectClub: (id: string) => void;
   deleteClub : (event:SyntheticEvent<HTMLButtonElement>,id : string) => void;
   submitting : boolean
   target: string
 }
 
-export const ClubList: React.FC<IProps> = ({ clubs, selectClub, deleteClub, submitting, target }) => {
+const ClubList: React.FC<IProps> = ({deleteClub, submitting, target }) => {
+  
+  const clubStore = useContext(ClubStore);
+  
+  const {clubsBydate,selectClub} = clubStore;
+
   return (
     <Segment clearing>
       <Item.Group divided>
-        {clubs.map(club => (
+        {clubsBydate.map(club => (
           <Item key={club.id}>
             <Item.Content>
               <Item.Header as="a">{club.name}</Item.Header>
@@ -35,3 +39,5 @@ export const ClubList: React.FC<IProps> = ({ clubs, selectClub, deleteClub, subm
     </Segment>
   );
 };
+
+export default observer(ClubList);

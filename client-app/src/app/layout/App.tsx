@@ -1,45 +1,23 @@
-import React, { useState, useEffect, Fragment, SyntheticEvent } from "react";
+import React, { useState, useEffect, Fragment, SyntheticEvent, useContext } from "react";
 import { Container } from "semantic-ui-react";
 import { IClub } from "../models/clubs";
-import { NavBar } from "../../features/nav/navbar";
-import { ClubDashboard } from "../../features/activities/dashboard/ClubDashboard";
+import NavBar from "../../features/nav/navbar";
+import  ClubDashboard  from "../../features/activities/dashboard/ClubDashboard";
 import agent from "../api/agent";
 import LoadingComponent from "./LoadingComponent";
+import ClubStore from "../stores/clubStore";
+import {observer} from 'mobx-react-lite';
 
 const App = () => {
+
+  const clubStore = useContext(ClubStore)
+
   const [clubs, setClubs] = useState<IClub[]>([]);
   const [selectedClub, setSelectedClub] = useState<IClub | null>(null);
-  const [loading,setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [target, setTarget] = useState('');
 
-  const handleSelectedClub = (id: string) => {
-    setSelectedClub(clubs.filter(c => c.id === id)[0]);
-    setEditMode(false);
-  };
-
   const [editMode, setEditMode] = useState(false);
-
-  const handleCreateClub = () => {
-    setEditMode(true);
-    setSelectedClub(null);
-  };
-
-  const handleCreateNewClub = (club: IClub) => {
-    setSubmitting(true);
-    agent.Clubs.create(club)
-    .then(()=>{
-      setClubs([...clubs, club]);
-      setSelectedClub(club);
-      setEditMode(false);
-    })
-    .then(()=>
-    setSubmitting(false)
-    )
-    .catch(error => {
-      console.log(error);
-    });
-  };
 
   const handleEditExistingClub = (club: IClub) => {
     setSubmitting(true);
@@ -66,32 +44,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    agent.Clubs.list().then(response => {
-      let clubs: IClub[] = [];
-      response.forEach((club) => {
-        club.dateEstablished = club.dateEstablished.split(".")[0];
-        clubs.push(club);
-      });
-      setClubs(clubs);
-    }).then(()=> setLoading(false));
-  }, []);
+    clubStore.loadClubs();
+  }, [clubStore]);
 
-  if(loading){
+  if(clubStore.loadingInitial){
     return <LoadingComponent content="Loading Clubs...."/>
   }
 
   return (
     <Fragment>
-      <NavBar openCreateForm={handleCreateClub} />
+      <NavBar/>
       <Container style={{ marginTop: "7em" }}>
         <ClubDashboard
-          clubs={clubs}
-          selectClub={handleSelectedClub}
-          selectedClub={selectedClub!}
-          editMode={editMode}
           setEditMode={setEditMode}
           setSelectedClub={setSelectedClub}
-          createNewClub={handleCreateNewClub}
           editExistingClub={handleEditExistingClub}
           deleteClub={handleDeleteClub}
           submitting ={submitting}
@@ -102,4 +68,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default observer(App);

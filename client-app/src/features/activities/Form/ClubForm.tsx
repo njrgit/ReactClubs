@@ -1,12 +1,12 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useContext } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
-import {v4 as uuid} from 'uuid'
+import {v4 as uuid} from 'uuid';
+import ClubStore from "../../../app/stores/clubStore";
 
 interface IProps {
   setEditMode: (editMode: boolean) => void;
   club: IClub;
-  createNewClub: (club : IClub) => void;
   editExistingClub: (club: IClub) => void;
   submitting : boolean;
 }
@@ -14,10 +14,11 @@ interface IProps {
 export const ClubForm: React.FC<IProps> = ({
   setEditMode,
   club: initialFormState,
-  createNewClub,
   editExistingClub,
   submitting
 }) => {
+  const clubStore = useContext(ClubStore);
+  
   const initialiseForm = () => {
     if (initialFormState) {
       return initialFormState;
@@ -41,7 +42,7 @@ export const ClubForm: React.FC<IProps> = ({
         ...club,
         id : uuid()
       }
-      createNewClub(newClub)
+      clubStore.createClub(newClub)
     }else{
       editExistingClub(club)
     }

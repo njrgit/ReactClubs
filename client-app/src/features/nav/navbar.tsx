@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Menu, Container, Button } from "semantic-ui-react";
+import ClubStore from "../../app/stores/clubStore";
+import { observer } from "mobx-react-lite";
 
-interface IProps{
-    openCreateForm : () => void;
-}
+const NavBar : React.FC = () => {
 
-export const NavBar : React.FC<IProps> = ({openCreateForm}) => {
+  const clubStore = useContext(ClubStore)
+
   return (
     <Menu fixed="top" pointing>
       <Container>
@@ -15,9 +16,11 @@ export const NavBar : React.FC<IProps> = ({openCreateForm}) => {
         </Menu.Item>
         <Menu.Item name="Clubs" />
         <Menu.Item>
-            <Button onClick={openCreateForm} primary content='Create Club'/>
+            <Button onClick={clubStore.openCreateForm} primary content='Create Club'/>
         </Menu.Item>
       </Container>
     </Menu>
   );
 };
+
+export default observer(NavBar)

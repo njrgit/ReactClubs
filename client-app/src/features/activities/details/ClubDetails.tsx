@@ -1,28 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
+import { observer } from "mobx-react-lite";
+import ClubStore from "../../../app/stores/clubStore";
 
 export interface IProps {
-  club: IClub;
   setEditMode: (editMode: boolean) => void;
   setSelectedClub: (club: IClub | null) => void;
 }
 
-export const ClubDetails: React.FC<IProps> = ({
-  club,
+const ClubDetails: React.FC<IProps> = ({
   setEditMode,
   setSelectedClub
 }) => {
+
+  const clubStore = useContext(ClubStore);
+
+  const {selectedClub : club} = clubStore;
+
   return (
     <Card fluid>
-      <Image src={`/images/${club.shortName}.png`} wrapped ui={false} />
+      <Image src={`/images/${club!.shortName}.png`} wrapped ui={false} />
       <Card.Content>
-        <Card.Header>{club.name}</Card.Header>
+        <Card.Header>{club!.name}</Card.Header>
         <Card.Meta>
-          <span className="date">{club.dateEstablished}</span>
+          <span className="date">{club!.dateEstablished}</span>
         </Card.Meta>
-        <Card.Description>{club.stadiumName}</Card.Description>
-        <Card.Description>{club.leagueName}</Card.Description>
+        <Card.Description>{club!.stadiumName}</Card.Description>
+        <Card.Description>{club!.leagueName}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
@@ -43,3 +48,5 @@ export const ClubDetails: React.FC<IProps> = ({
     </Card>
   );
 };
+
+export default observer(ClubDetails)
