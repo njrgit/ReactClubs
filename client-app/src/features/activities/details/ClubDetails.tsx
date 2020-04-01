@@ -1,22 +1,13 @@
 import React, { useContext } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
-import { IClub } from "../../../app/models/clubs";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
 
-export interface IProps {
-  setEditMode: (editMode: boolean) => void;
-  setSelectedClub: (club: IClub | null) => void;
-}
-
-const ClubDetails: React.FC<IProps> = ({
-  setEditMode,
-  setSelectedClub
-}) => {
+const ClubDetails: React.FC = () => {
 
   const clubStore = useContext(ClubStore);
 
-  const {selectedClub : club} = clubStore;
+  const {selectedClub : club,openEditForm, cancelSelectedClub} = clubStore;
 
   return (
     <Card fluid>
@@ -32,13 +23,13 @@ const ClubDetails: React.FC<IProps> = ({
       <Card.Content extra>
         <Button.Group widths={2}>
           <Button
-            onClick={() => setEditMode(true)}
+            onClick={() =>openEditForm(club!.id)}
             color="blue"
             basic
             content="Edit"
           ></Button>
           <Button
-            onClick={() => setSelectedClub(null)}
+            onClick={cancelSelectedClub}
             color="grey"
             basic
             content="Cancel"

@@ -1,19 +1,13 @@
-import React, { SyntheticEvent, useContext } from "react";
+import React, {useContext } from "react";
 import { Item, Image, Button, Segment } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
 
-interface IProps {
-  deleteClub : (event:SyntheticEvent<HTMLButtonElement>,id : string) => void;
-  submitting : boolean
-  target: string
-}
-
-const ClubList: React.FC<IProps> = ({deleteClub, submitting, target }) => {
+const ClubList: React.FC = () => {
   
   const clubStore = useContext(ClubStore);
   
-  const {clubsBydate,selectClub} = clubStore;
+  const {clubsBydate,selectClub, deleteClub,submitting,target} = clubStore;
 
   return (
     <Segment clearing>

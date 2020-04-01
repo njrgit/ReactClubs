@@ -3,22 +3,19 @@ import { Segment, Form, Button } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
 import {v4 as uuid} from 'uuid';
 import ClubStore from "../../../app/stores/clubStore";
+import { observer } from "mobx-react-lite";
 
 interface IProps {
-  setEditMode: (editMode: boolean) => void;
   club: IClub;
-  editExistingClub: (club: IClub) => void;
-  submitting : boolean;
 }
 
-export const ClubForm: React.FC<IProps> = ({
-  setEditMode,
-  club: initialFormState,
-  editExistingClub,
-  submitting
+const ClubForm: React.FC<IProps> = ({
+  club: initialFormState
 }) => {
-  const clubStore = useContext(ClubStore);
   
+  const clubStore = useContext(ClubStore);
+  const {editExistingClub, submitting, cancelEditFormOpen} = clubStore
+
   const initialiseForm = () => {
     if (initialFormState) {
       return initialFormState;
@@ -96,10 +93,12 @@ export const ClubForm: React.FC<IProps> = ({
         <Button loading={submitting} floated="right" type="submit" positive>
           Submit
         </Button>
-        <Button onClick={() => setEditMode(false)} floated="right">
+        <Button onClick={cancelEditFormOpen} floated="right">
           Cancel
         </Button>
       </Form>
     </Segment>
   );
 };
+
+export default observer(ClubForm);
