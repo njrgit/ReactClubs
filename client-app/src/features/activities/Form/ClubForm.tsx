@@ -1,37 +1,38 @@
-import React, { useState, FormEvent, useContext } from "react";
+import React, { useState, FormEvent, useContext, useEffect } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
 import {v4 as uuid} from 'uuid';
 import ClubStore from "../../../app/stores/clubStore";
 import { observer } from "mobx-react-lite";
+import { RouteComponentProps } from "react-router-dom";
 
-interface IProps {
-  club: IClub;
+interface DetailParams{
+  id:string
 }
 
-const ClubForm: React.FC<IProps> = ({
-  club: initialFormState
-}) => {
+
+const ClubForm: React.FC<RouteComponentProps<DetailParams>> = ({match, history}) => {
   
   const clubStore = useContext(ClubStore);
-  const {editExistingClub, submitting, cancelEditFormOpen} = clubStore
-
-  const initialiseForm = () => {
-    if (initialFormState) {
-      return initialFormState;
-    } else {
-      return {
-        id: "",
-        name: "",
-        leagueName: "",
-        stadiumName: "",
-        dateEstablished: "",
-        shortName: ""
-      };
+  const {editExistingClub, submitting, club:initialFormState, loadClub, clearClub} = clubStore
+  
+  const [club, setClub] = useState<IClub>({
+      id: "",
+      name: "",
+      leagueName: "",
+      stadiumName: "",
+      dateEstablished: "",
+      shortName: ""
+  });
+  
+  useEffect(() => {
+    if(match.params.id && club.id.length === 0){
+      loadClub(match.params.id).then(() => initialFormState && setClub(initialFormState));
     }
-  };
-
-  const [club, setClub] = useState<IClub>(initialiseForm);
+    return () =>{
+      clearClub();
+    };
+  },[loadClub,clearClub, match.params.id, initialFormState, club.id.length]);
 
   const handleSubmit = () => {
     if(club.id.length === 0){
@@ -39,9 +40,9 @@ const ClubForm: React.FC<IProps> = ({
         ...club,
         id : uuid()
       }
-      clubStore.createClub(newClub)
+      clubStore.createClub(newClub).then(()=> history.push(`/clubs/${newClub.id}`));
     }else{
-      editExistingClub(club)
+      editExistingClub(club).then(()=> history.push(`/clubs/${club.id}`));
     }
   };
 
@@ -93,7 +94,7 @@ const ClubForm: React.FC<IProps> = ({
         <Button loading={submitting} floated="right" type="submit" positive>
           Submit
         </Button>
-        <Button onClick={cancelEditFormOpen} floated="right">
+        <Button onClick={()=>history.push('/clubs')} floated="right">
           Cancel
         </Button>
       </Form>

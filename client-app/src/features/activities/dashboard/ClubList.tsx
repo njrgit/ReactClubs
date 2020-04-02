@@ -2,12 +2,13 @@ import React, {useContext } from "react";
 import { Item, Image, Button, Segment } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
+import { Link } from "react-router-dom";
 
 const ClubList: React.FC = () => {
   
   const clubStore = useContext(ClubStore);
   
-  const {clubsBydate,selectClub, deleteClub,submitting,target} = clubStore;
+  const {clubsBydate, deleteClub,submitting,target} = clubStore;
 
   return (
     <Segment clearing>
@@ -23,7 +24,7 @@ const ClubList: React.FC = () => {
               </Item.Description>
               <Item.Meta>{club.dateEstablished}</Item.Meta>
               <Item.Extra>
-                <Button  onClick={() => selectClub(club.id)} floated="right" basic color="blue" content="View" />
+                <Button as ={Link} to={`/clubs/${club.id}`} floated="right" basic color="blue" content="View" />
                 <Button name={club.id} loading={target === club.id && submitting} onClick={(e) => deleteClub(e,club.id)} floated="right" basic color="red" content="Delete" />
               </Item.Extra>
             </Item.Content>

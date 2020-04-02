@@ -1,22 +1,20 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Menu, Container, Button } from "semantic-ui-react";
-import ClubStore from "../../app/stores/clubStore";
 import { observer } from "mobx-react-lite";
+import { NavLink } from "react-router-dom";
 
 const NavBar : React.FC = () => {
-
-  const clubStore = useContext(ClubStore)
 
   return (
     <Menu fixed="top" pointing>
       <Container>
-        <Menu.Item header>
+        <Menu.Item header as ={NavLink} exact to='/'>
         <img src="/images/fooball.png" alt="clubLogo" style={{marginRight: 10}}/>
-            Clubs
+            Home
         </Menu.Item>
-        <Menu.Item name="Clubs" />
+        <Menu.Item name="Clubs" header as ={NavLink} exact to='/clubs'/>
         <Menu.Item>
-            <Button onClick={clubStore.openCreateForm} primary content='Create Club'/>
+            <Button primary content='Create Club' as ={NavLink} exact to='/createClub'/>
         </Menu.Item>
       </Container>
     </Menu>

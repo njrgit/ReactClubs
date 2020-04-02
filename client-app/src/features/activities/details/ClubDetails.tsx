@@ -1,13 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
+import { RouteComponentProps, Link } from "react-router-dom";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
-const ClubDetails: React.FC = () => {
+
+interface DetailsParams {
+  id: string;
+}
+
+
+const ClubDetails: React.FC<RouteComponentProps<DetailsParams>> = ({match, history}) => {
 
   const clubStore = useContext(ClubStore);
 
-  const {selectedClub : club,openEditForm, cancelSelectedClub} = clubStore;
+  const {club, loadClub, loadingInitial} = clubStore;
+
+
+  useEffect(() => {
+    loadClub(match.params.id)
+  },[loadClub, match.params.id])
+
+  if(loadingInitial || ! club){
+    return <LoadingComponent content="Loading Club Details..." />
+  }
 
   return (
     <Card fluid>
@@ -23,13 +40,13 @@ const ClubDetails: React.FC = () => {
       <Card.Content extra>
         <Button.Group widths={2}>
           <Button
-            onClick={() =>openEditForm(club!.id)}
+            as={Link} to={`/manage/${club.id}`}
             color="blue"
             basic
             content="Edit"
           ></Button>
           <Button
-            onClick={cancelSelectedClub}
+            onClick={() => history.push('/clubs')}
             color="grey"
             basic
             content="Cancel"
