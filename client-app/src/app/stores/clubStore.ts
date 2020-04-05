@@ -15,7 +15,18 @@ class ClubStore {
     @observable target = "";
 
     @computed get clubsBydate() {
-        return Array.from(this.clubRegistry.values()).sort((a, b) => Date.parse(a.dateEstablished) - Date.parse(b.dateEstablished));
+        return this.groupClubsByDate(Array.from(this.clubRegistry.values()));
+    }
+
+    groupClubsByDate(clubs: IClub[]){
+        const sortedClubs = clubs.sort(
+            (a, b) => Date.parse(a.dateEstablished) - Date.parse(b.dateEstablished)
+        )
+        return Object.entries(sortedClubs.reduce((clubs, club)=>{
+            const date  = club.dateEstablished.split('T')[0];
+            clubs[date] = clubs[date] ? [...clubs[date], club] : [club];
+            return clubs;
+        },{} as {[key:string]: IClub[]}));
     }
 
     @action loadClubs = async () => {

@@ -1,9 +1,13 @@
 import React, { useContext, useEffect } from "react";
-import { Card, Image, Button } from "semantic-ui-react";
+import {Grid } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps} from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import ClubDetailsHeader from "./ClubDetailsHeader";
+import ClubDetailsInfo from "./ClubDetailsInfo";
+import ClubDetailsChat from "./ClubDetailsChat";
+import ClubDetailsSidebar from "./ClubDetailsSidebar";
 
 
 interface DetailsParams {
@@ -27,33 +31,16 @@ const ClubDetails: React.FC<RouteComponentProps<DetailsParams>> = ({match, histo
   }
 
   return (
-    <Card fluid>
-      <Image src={`/images/${club!.shortName}.png`} wrapped ui={false} />
-      <Card.Content>
-        <Card.Header>{club!.name}</Card.Header>
-        <Card.Meta>
-          <span className="date">{club!.dateEstablished}</span>
-        </Card.Meta>
-        <Card.Description>{club!.stadiumName}</Card.Description>
-        <Card.Description>{club!.leagueName}</Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-        <Button.Group widths={2}>
-          <Button
-            as={Link} to={`/manage/${club.id}`}
-            color="blue"
-            basic
-            content="Edit"
-          ></Button>
-          <Button
-            onClick={() => history.push('/clubs')}
-            color="grey"
-            basic
-            content="Cancel"
-          ></Button>
-        </Button.Group>
-      </Card.Content>
-    </Card>
+    <Grid>
+      <Grid.Column width={10}>
+        <ClubDetailsHeader club={club}/>
+        <ClubDetailsInfo club={club}/>
+        <ClubDetailsChat/>
+      </Grid.Column>
+      <Grid.Column width={6}>
+        <ClubDetailsSidebar/>
+      </Grid.Column>
+    </Grid>
   );
 };
 

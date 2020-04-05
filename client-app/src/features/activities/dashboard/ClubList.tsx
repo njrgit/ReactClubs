@@ -1,37 +1,27 @@
-import React, {useContext } from "react";
-import { Item, Image, Button, Segment } from "semantic-ui-react";
+import React, { useContext, Fragment } from "react";
+import { Item, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import ClubStore from "../../../app/stores/clubStore";
-import { Link } from "react-router-dom";
+import ClubListItem from "../dashboard/ClubListItem";
 
 const ClubList: React.FC = () => {
-  
   const clubStore = useContext(ClubStore);
-  
-  const {clubsBydate, deleteClub,submitting,target} = clubStore;
+
+  const { clubsBydate } = clubStore;
 
   return (
-    <Segment clearing>
-      <Item.Group divided>
-        {clubsBydate.map(club => (
-          <Item key={club.id}>
-            <Item.Content>
-              <Item.Header as="a">{club.name}</Item.Header>
-              <Item.Description>
-                <div>{club.stadiumName}</div>
-                <div>{club.leagueName}</div>
-                <Image src="/images/wireframe/short-paragraph.png" />
-              </Item.Description>
-              <Item.Meta>{club.dateEstablished}</Item.Meta>
-              <Item.Extra>
-                <Button as ={Link} to={`/clubs/${club.id}`} floated="right" basic color="blue" content="View" />
-                <Button name={club.id} loading={target === club.id && submitting} onClick={(e) => deleteClub(e,club.id)} floated="right" basic color="red" content="Delete" />
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-        ))}
-      </Item.Group>
-    </Segment>
+    <Fragment>
+      {clubsBydate.map(([group, clubs]) => (
+        <Fragment  key={group} >
+          <Label size="large" color="blue">{group}</Label>
+            <Item.Group divided>
+              {clubs.map(club => (
+                <ClubListItem key={club.id} club={club} />
+              ))}
+            </Item.Group>
+        </Fragment>
+      ))}
+    </Fragment>
   );
 };
 
