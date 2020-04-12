@@ -23,8 +23,8 @@ const ClubDetails: React.FC<RouteComponentProps<DetailsParams>> = ({match, histo
 
 
   useEffect(() => {
-    loadClub(match.params.id)
-  },[loadClub, match.params.id])
+    loadClub(match.params.id);
+  },[loadClub, match.params.id, history])
 
   if(loadingInitial || ! club){
     return <LoadingComponent content="Loading Club Details..." />

@@ -1,6 +1,8 @@
+using System.Net;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using MediatR;
 using Persistence;
 
@@ -25,16 +27,14 @@ namespace Application.Clubs
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
 
-                var club = _context.Clubs.FindAsync(request.Id);
-
-                Console.WriteLine(club.Result.Name);
+                var club = await _context.Clubs.FindAsync(request.Id);
 
                 if (club == null)
                 {
-                    throw new Exception($"Could not find club with id : {request.Id}");
+                    throw new RestException(HttpStatusCode.NotFound, new {clubs = "Not Found"});
                 }
 
-                _context.Remove(club.Result);
+                _context.Remove(club);
 
                 var success = await _context.SaveChangesAsync() > 0;
 

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -17,6 +18,16 @@ namespace Application.Clubs
             public string StadiumName { get; set; }
             public DateTime DateEstablished { get; set; }        
             public string ShortName {get; set;}
+        }
+
+        public class CommadValidator : AbstractValidator<Command>
+        {
+            public CommadValidator()
+            {
+                RuleFor( x => x.Name).NotEmpty();
+                RuleFor( x => x.LeagueName).NotEmpty();
+                RuleFor( x => x.StadiumName).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Command>

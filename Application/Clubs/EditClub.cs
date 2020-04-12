@@ -1,7 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -18,6 +21,16 @@ namespace Application.Clubs
             public DateTime? DateEstablished { get; set; }        
             public string ShortName {get; set;}
 
+        }
+
+        public class CommadValidator : AbstractValidator<Command>
+        {
+            public CommadValidator()
+            {
+                RuleFor( x => x.Name).NotEmpty();
+                RuleFor( x => x.LeagueName).NotEmpty();
+                RuleFor( x => x.StadiumName).NotEmpty();
+            }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -37,11 +50,10 @@ namespace Application.Clubs
 
                 var club = await _context.Clubs.FindAsync(request.Id);
 
-                if(club == null)
+                if (club == null)
                 {
-                    throw new Exception($"Could not find club with id : {request.Id}");
+                    throw new RestException(HttpStatusCode.NotFound, new {clubs = "Not Found"});
                 }
-
                 club.Name = request.Name ?? club.Name;
                 club.LeagueName = request.LeagueName ?? club.LeagueName;
                 club.StadiumName = request.StadiumName ?? club.StadiumName;
