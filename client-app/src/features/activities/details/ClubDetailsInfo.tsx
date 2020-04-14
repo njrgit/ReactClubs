@@ -1,6 +1,7 @@
 import React from "react";
 import { Segment, Grid, Icon } from "semantic-ui-react";
 import { IClub } from "../../../app/models/clubs";
+import {format} from 'date-fns'
 
 const ClubDetailsInfo: React.FC<{club : IClub}> = ({club}) => {
   return (
@@ -11,7 +12,7 @@ const ClubDetailsInfo: React.FC<{club : IClub}> = ({club}) => {
             <Icon size="large" color="teal" name="info" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <p>{club.shortName}</p>
+            <p>{club.leagueName}</p>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -21,7 +22,7 @@ const ClubDetailsInfo: React.FC<{club : IClub}> = ({club}) => {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{club.dateEstablished}</span>
+            <span>{format(club.dateEstablished,'eeee do MMMM')}</span>
           </Grid.Column>
         </Grid>
       </Segment>

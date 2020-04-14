@@ -1,9 +1,10 @@
 import React from 'react'
 import { Segment, Item, Header, Button, Image } from 'semantic-ui-react'
-
 import placeHolderImage from '../../../app/Images/placeholder.png';
 import { IClub } from '../../../app/models/clubs';
 import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
+import {format} from 'date-fns'
 
 const activityImageStyle = {
   filter: 'brightness(30%)'
@@ -32,7 +33,7 @@ const ClubDetailsHeader: React.FC<{club : IClub}> = ({club}) => {
                           content={club.name}
                           style={{ color: 'white' }}
                         />
-                        <p>{club.dateEstablished}</p>
+                        <p>{format(club.dateEstablished, 'eeee do MMMM')}</p>
                         <p>
                           Played at <strong>{club.stadiumName}</strong>
                         </p>
@@ -44,7 +45,7 @@ const ClubDetailsHeader: React.FC<{club : IClub}> = ({club}) => {
               <Segment clearing attached='bottom'>
                 <Button color='teal'>Join Activity</Button>
                 <Button>Cancel attendance</Button>
-                <Button color='orange' floated='right'>
+                <Button as={Link} to={`/manage/${club.id}`} color='orange' floated='right'>
                   Manage Event
                 </Button>
               </Segment>

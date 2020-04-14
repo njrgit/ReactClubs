@@ -1,10 +1,28 @@
-import React, { useState, FormEvent, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
-import { IClub } from "../../../app/models/clubs";
+import { ClubFormValues } from "../../../app/models/clubs";
 import { v4 as uuid } from "uuid";
 import ClubStore from "../../../app/stores/clubStore";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
+import { Form as FinalForm, Field } from "react-final-form";
+import TextInput from "../../../app/common/form/TextInput";
+import TextAreaInput from "../../../app/common/form/TextAreaInput";
+import SelectInput from "../../../app/common/form/SelectInput";
+import DateInput from "../../../app/common/form/DateInput";
+import { leagueNames } from "../../../app/common/options/leagueName";
+import { combineDateAndTime } from "../../../app/common/util/util";
+import {combineValidators, isRequired} from 'revalidate';
+
+
+const validate  = combineValidators({
+  name: isRequired({message: 'Name is required'}),
+  leagueName: isRequired({message: 'League is required'}),
+  stadiumName: isRequired({message: 'Stadium is required'}),
+  shortName: isRequired({message: 'Short Name is required'}),
+  dateEstablished: isRequired({message: 'Date is required'}),
+  time: isRequired({message: 'Time Name is required'})
+})
 
 interface DetailParams {
   id: string;
@@ -12,105 +30,113 @@ interface DetailParams {
 
 const ClubForm: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
-  history
+  history,
 }) => {
   const clubStore = useContext(ClubStore);
   const {
     editExistingClub,
     submitting,
-    club: initialFormState,
     loadClub,
-    clearClub
-  } = clubStore;
+    } = clubStore;
 
-  const [club, setClub] = useState<IClub>({
-    id: "",
-    name: "",
-    leagueName: "",
-    stadiumName: "",
-    dateEstablished: "",
-    shortName: ""
-  });
+  const [club, setClub] = useState(new ClubFormValues());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (match.params.id && club.id.length === 0) {
-      loadClub(match.params.id).then(
-        () => initialFormState && setClub(initialFormState)
-      );
+    if (match.params.id) {
+      setLoading(true);
+      loadClub(match.params.id)
+        .then((club) => setClub(new ClubFormValues(club)))
+        .finally(() => setLoading(false));
     }
-    return () => {
-      clearClub();
-    };
-  }, [loadClub, clearClub, match.params.id, initialFormState, club.id.length]);
+  }, [loadClub, match.params.id]);
 
-  const handleSubmit = () => {
-    if (club.id.length === 0) {
-      let newClub = {
-        ...club,
-        id: uuid()
-      };
-      clubStore
-        .createClub(newClub)
-        .then(() => history.push(`/clubs/${newClub.id}`));
-    } else {
-      editExistingClub(club).then(() => history.push(`/clubs/${club.id}`));
-    }
-  };
+  // const handleInputChange = (event: FormEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.currentTarget;
+  //   setClub({ ...club, [name]: value });
+  // };
 
-  const handleInputChange = (event: FormEvent<HTMLInputElement>) => {
-    const { name, value } = event.currentTarget;
-    setClub({ ...club, [name]: value });
+  const handleFinalFormSubmit = (values: any) => {
+    const dateTime = combineDateAndTime(values.dateEstablished, values.time);
+    const { dateEstablished, time, ...club } = values;
+    club.dateEstablished = dateTime;
+    if (!club.id) {
+          let newClub = {
+            ...club,
+            id: uuid()
+          };
+          clubStore
+            .createClub(newClub);
+        } else {
+          editExistingClub(club);
+        }
   };
 
   return (
     <Grid>
       <Grid.Column width={10}>
         <Segment clearing>
-          <Form onSubmit={handleSubmit}>
-            <Form.Field>
-              <label>Name</label>
-              <input
-                name="name"
-                onChange={handleInputChange}
-                placeholder="Name"
-                value={club.name}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Stadium Name</label>
-              <input
-                name="stadiumName"
-                onChange={handleInputChange}
-                placeholder="Stadium Name"
-                value={club.stadiumName}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>League Name</label>
-              <input
-                name="leagueName"
-                onChange={handleInputChange}
-                placeholder="League Name"
-                value={club.leagueName}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Date</label>
-              <input
-                name="dateEstablished"
-                onChange={handleInputChange}
-                type="datetime-local"
-                placeholder="Date"
-                value={club.dateEstablished}
-              />
-            </Form.Field>
-            <Button loading={submitting} floated="right" type="submit" positive>
-              Submit
-            </Button>
-            <Button onClick={() => history.push("/clubs")} floated="right">
-              Cancel
-            </Button>
-          </Form>
+          <FinalForm
+          validate={validate}
+            initialValues={club}
+            onSubmit={handleFinalFormSubmit}
+            render={({ handleSubmit, invalid, pristine  }) => (
+              <Form onSubmit={handleSubmit} loading={loading}>
+                <Field
+                  name="name"
+                  placeholder="Name"
+                  value={club.name}
+                  component={TextInput}
+                />
+                <Field
+                  name="stadiumName"
+                  placeholder="Stadium Name"
+                  value={club.stadiumName}
+                  rows={3}
+                  component={TextAreaInput}
+                />
+                <Field
+                  name="leagueName"
+                  placeholder="League Name"
+                  value={club.leagueName}
+                  options={leagueNames}
+                  component={SelectInput}
+                />
+                <Form.Group>
+                  <Field
+                    date={true}
+                    name="dateEstablished"
+                    placeholder="Date"
+                    value={club.dateEstablished}
+                    component={DateInput}
+                  />
+                  <Field
+                    time={true}
+                    name="time"
+                    placeholder="Time"
+                    value={club.time}
+                    component={DateInput}
+                  />
+                </Form.Group>
+                <Button
+                  disabled={loading || invalid || pristine}
+                  loading={submitting}
+                  floated="right"
+                  type="submit"
+                  positive
+                >
+                  Submit
+                </Button>
+                <Button
+                  disabled={loading}
+                  onClick={club.id ? ()=> history.push(`/clubs/${club.id}`) : () => history.push("/clubs")}
+                  floated="right"
+                >
+                  Cancel
+                </Button>
+              </Form>
+            )}
+          />
         </Segment>
       </Grid.Column>
     </Grid>

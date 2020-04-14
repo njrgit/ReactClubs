@@ -2,6 +2,7 @@ import React from "react";
 import { Item, Button, Segment, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { IClub } from "../../../app/models/clubs";
+import {format} from 'date-fns'
 
 const ClubListItem: React.FC<{ club: IClub }> = ({ club }) => {
   return (
@@ -19,7 +20,7 @@ const ClubListItem: React.FC<{ club: IClub }> = ({ club }) => {
         </Item.Group>
       </Segment>
       <Segment>
-        <Icon name="clock"/> {club.dateEstablished}
+        <Icon name="clock"/> {format(club.dateEstablished, 'h:mm a')}
       </Segment>
       <Segment>
         <Icon name="target"/> {club.leagueName}

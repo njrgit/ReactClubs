@@ -2,6 +2,8 @@ import { observable, action, computed, configure, runInAction } from 'mobx'
 import { createContext, SyntheticEvent } from 'react';
 import { IClub } from '../models/clubs';
 import agent from '../api/agent';
+import { history } from '../..';
+import { toast } from 'react-toastify';
 
 
 configure({ enforceActions: 'always' });
@@ -20,10 +22,10 @@ class ClubStore {
 
     groupClubsByDate(clubs: IClub[]){
         const sortedClubs = clubs.sort(
-            (a, b) => Date.parse(a.dateEstablished) - Date.parse(b.dateEstablished)
+            (a, b) => a.dateEstablished!.getTime()- b.dateEstablished!.getTime()
         )
         return Object.entries(sortedClubs.reduce((clubs, club)=>{
-            const date  = club.dateEstablished.split('T')[0];
+            const date  = club.dateEstablished.toISOString().split('T')[0];
             clubs[date] = clubs[date] ? [...clubs[date], club] : [club];
             return clubs;
         },{} as {[key:string]: IClub[]}));
@@ -35,7 +37,7 @@ class ClubStore {
             const clubs = await agent.Clubs.list();
             runInAction('loading clubs', () => {
                 clubs.forEach((club) => {
-                    club.dateEstablished = club.dateEstablished.split(".")[0];
+                    club.dateEstablished = new Date(club.dateEstablished);
                     this.clubRegistry.set(club.id, club);
                 });
                 this.loadingInitial = false;
@@ -52,14 +54,18 @@ class ClubStore {
         let club = this.getClub(id);
         if (club) {
             this.club = club;
+            return club;
         } else {
             this.loadingInitial = true;
             try {
                 club = await agent.Clubs.details(id);
                 runInAction("getting club details", () => {
+                    club.dateEstablished = new Date(club.dateEstablished);
                     this.club = club;
+                    this.clubRegistry.set(club.id, club);
                     this.loadingInitial = false;
                 });
+                return club;
             } catch (error) {
 
                 runInAction("error when getting single club details", () => {
@@ -83,11 +89,13 @@ class ClubStore {
                 this.clubRegistry.set(club.id, club);
                 this.submitting = false;
             });
+            history.push(`/clubs/${club.id}`);
         } catch (error) {
             runInAction('Creating Club error', () => {
                 console.log(error)
                 this.submitting = false;
             });
+            toast.error("Problem Submitting Data");
         }
     };
 
@@ -107,11 +115,13 @@ class ClubStore {
                 this.club = club;
                 this.submitting = false;
             });
+            history.push(`/clubs/${club.id}`);
         } catch (error) {
             runInAction('Edtting Existing Club Error', () => {
                 this.submitting = false;
                 console.log(error);
             });
+            toast.error("Problem Submitting Data");
         }
     }
 
