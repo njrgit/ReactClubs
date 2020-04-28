@@ -2,8 +2,22 @@ import axios, { AxiosResponse } from 'axios';
 import { IClub } from '../models/clubs';
 import { history } from '../..';
 import { toast } from 'react-toastify';
+import { IUser, IUserFormValues } from '../models/user';
 
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+axios.interceptors.request.use((config)=>{
+
+    const token = window.localStorage.getItem('jwt');
+
+    if(token){
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+}, error =>{
+    return Promise.reject(error);
+});
 
 axios.interceptors.response.use(undefined,error =>{
 
@@ -27,7 +41,7 @@ axios.interceptors.response.use(undefined,error =>{
         history.push('/notfound');
     }
 
-    console.log(error.response)
+    throw error.response;
 });
 
 //Doing a wait on the response
@@ -49,6 +63,13 @@ const Clubs = {
     delete: (id:string) => requests.del(`/clubs/${id}`)
 }
 
+const User = {
+    currentUser: (): Promise<IUser> => requests.get('/user'),
+    login: (user:IUserFormValues) : Promise<IUser> => requests.post(`/user/login`, user),
+    register: (user:IUserFormValues) : Promise<IUser> => requests.post(`/user/register`, user)
+}
+
 export default{
-    Clubs
+    Clubs,
+    User
 }

@@ -1,14 +1,20 @@
-import { observable, action, computed, configure, runInAction } from 'mobx'
-import { createContext, SyntheticEvent } from 'react';
+import { observable, action, computed, runInAction } from 'mobx'
+import { SyntheticEvent } from 'react';
 import { IClub } from '../models/clubs';
 import agent from '../api/agent';
 import { history } from '../..';
 import { toast } from 'react-toastify';
+import { RootStore } from './rootStore';
 
 
-configure({ enforceActions: 'always' });
 
-class ClubStore {
+
+export default class ClubStore {
+
+    rootStore : RootStore;
+    constructor(rootStore: RootStore){
+        this.rootStore = rootStore;
+    }
 
     @observable clubRegistry = new Map();
     @observable loadingInitial = false;
@@ -144,5 +150,3 @@ class ClubStore {
         }
     }
 }
-
-export default createContext(new ClubStore())

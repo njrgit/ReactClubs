@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
 import { ClubFormValues } from "../../../app/models/clubs";
 import { v4 as uuid } from "uuid";
-import ClubStore from "../../../app/stores/clubStore";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router-dom";
 import { Form as FinalForm, Field } from "react-final-form";
@@ -13,6 +12,7 @@ import DateInput from "../../../app/common/form/DateInput";
 import { leagueNames } from "../../../app/common/options/leagueName";
 import { combineDateAndTime } from "../../../app/common/util/util";
 import {combineValidators, isRequired} from 'revalidate';
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 
 const validate  = combineValidators({
@@ -32,12 +32,13 @@ const ClubForm: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
   history,
 }) => {
-  const clubStore = useContext(ClubStore);
+  const rootStore = useContext(RootStoreContext);
   const {
+    createClub,
     editExistingClub,
     submitting,
     loadClub,
-    } = clubStore;
+    } = rootStore.clubStore;
 
   const [club, setClub] = useState(new ClubFormValues());
   const [loading, setLoading] = useState(false);
@@ -65,8 +66,7 @@ const ClubForm: React.FC<RouteComponentProps<DetailParams>> = ({
             ...club,
             id: uuid()
           };
-          clubStore
-            .createClub(newClub);
+            createClub(newClub);
         } else {
           editExistingClub(club);
         }

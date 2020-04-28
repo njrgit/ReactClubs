@@ -1,20 +1,20 @@
 import React, { useContext, useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import  ClubList  from "./ClubList";
-
 import { observer } from "mobx-react-lite";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
-import ClubStore from "../../../app/stores/clubStore";
+import  {RootStoreContext} from "../../../app/stores/rootStore";
 
 const ClubDashboard: React.FC = () => {
 
-  const clubStore = useContext(ClubStore);
+  const rootStore = useContext(RootStoreContext);
+  const {loadClubs, loadingInitial} = rootStore.clubStore;
 
   useEffect(() => {
-    clubStore.loadClubs();
-  }, [clubStore]);
+    loadClubs();
+  }, [loadClubs]);
 
-  if (clubStore.loadingInitial) {
+  if (loadingInitial) {
     return <LoadingComponent content="Loading Clubs...." />;
   }
   

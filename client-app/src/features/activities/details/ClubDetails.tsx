@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import {Grid } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
-import ClubStore from "../../../app/stores/clubStore";
 import { RouteComponentProps} from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import ClubDetailsHeader from "./ClubDetailsHeader";
 import ClubDetailsInfo from "./ClubDetailsInfo";
 import ClubDetailsChat from "./ClubDetailsChat";
 import ClubDetailsSidebar from "./ClubDetailsSidebar";
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 
 interface DetailsParams {
@@ -17,9 +17,9 @@ interface DetailsParams {
 
 const ClubDetails: React.FC<RouteComponentProps<DetailsParams>> = ({match, history}) => {
 
-  const clubStore = useContext(ClubStore);
+  const rootStore = useContext(RootStoreContext);
 
-  const {club, loadClub, loadingInitial} = clubStore;
+  const {club, loadClub, loadingInitial} = rootStore.clubStore;
 
 
   useEffect(() => {
