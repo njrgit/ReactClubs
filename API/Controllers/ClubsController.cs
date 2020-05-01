@@ -7,40 +7,45 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
-{
-    public class ClubsController : BaseController
-    {
+namespace API.Controllers {
+    public class ClubsController : BaseController {
         [HttpGet]
-        public async Task<ActionResult<List<Club>>> List()
-        {
-            return await Mediator.Send(new List.Query());
+        public async Task<ActionResult<List<ClubDto>>> List () {
+            return await Mediator.Send (new List.Query ());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet ("{id}")]
         [Authorize]
-        public async Task<ActionResult<Club>> SingleClub(Guid id)
-        {
-            return await Mediator.Send(new SingleClub.Query{id= id});
+        public async Task<ActionResult<ClubDto>> SingleClub (Guid id) {
+            return await Mediator.Send (new SingleClub.Query { id = id });
         }
 
         [HttpPost]
-        public async Task<ActionResult<Unit>> CreateSingleClub (CreateSingleClub.Command command)
-        {
-            return await Mediator.Send(command);
+        public async Task<ActionResult<Unit>> CreateSingleClub (CreateSingleClub.Command command) {
+            return await Mediator.Send (command);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Unit>> EditSingleClub(Guid id,EditClub.Command command)
-        {
+        [HttpPut ("{id}")]
+        [Authorize (Policy = "IsClubHost")]
+        public async Task<ActionResult<Unit>> EditSingleClub (Guid id, EditClub.Command command) {
             command.Id = id;
-            return await Mediator.Send(command);
+            return await Mediator.Send (command);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Unit>> DeleteSingleClub(Guid id)
-        {
-            return await Mediator.Send(new DeleteClub.Command{Id = id});
+        [HttpDelete ("{id}")]
+        [Authorize (Policy = "IsClubHost")]
+        public async Task<ActionResult<Unit>> DeleteSingleClub (Guid id) {
+            return await Mediator.Send (new DeleteClub.Command { Id = id });
+        }
+
+        [HttpPost ("{id}/attend")]
+        public async Task<ActionResult<Unit>> Attend (Guid id) {
+            return await Mediator.Send (new Attend.Command { Id = id });
+        }
+
+        [HttpDelete ("{id}/attend")]
+        public async Task<ActionResult<Unit>> Unattend (Guid id) {
+            return await Mediator.Send (new Unattend.Command { Id = id });
         }
     }
 }

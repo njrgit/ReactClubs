@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Application.Clubs;
 using Application.Interfaces;
 using API.Middleware;
@@ -13,20 +9,19 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AutoMapper;
 
-namespace API {
+namespace API
+{
     public class Startup {
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
@@ -49,6 +44,7 @@ namespace API {
 
             services.AddDbContext<DataContext> (opt => {
                 var connectionstring = Configuration.GetConnectionString ("DefaultConnectionString");
+                opt.UseLazyLoadingProxies();
                 opt.UseSqlite (connectionstring);
             });
 
@@ -59,6 +55,7 @@ namespace API {
             });
 
             services.AddMediatR (typeof (List.Handler).Assembly);
+            services.AddAutoMapper(typeof(List.Handler));
 
             var builder = services.AddIdentityCore<AppUser> ();
 
@@ -66,6 +63,15 @@ namespace API {
             identityBuilder.AddEntityFrameworkStores<DataContext> ();
             identityBuilder.AddSignInManager<SignInManager<AppUser>> ();
 
+            services.AddAuthorization(opt =>{
+
+                opt.AddPolicy("IsClubHost", policy =>{
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+
+            services.AddTransient<IAuthorizationHandler, IHostRequirementHandler>();
+            
             var key = new SymmetricSecurityKey (Encoding.UTF8.GetBytes (Configuration["TokenKey"]));
 
             services.AddAuthentication (JwtBearerDefaults.AuthenticationScheme)

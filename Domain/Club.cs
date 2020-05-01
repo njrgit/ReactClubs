@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 namespace Domain
 {
     public class Club
@@ -9,5 +11,6 @@ namespace Domain
         public string StadiumName { get; set; }
         public DateTime DateEstablished { get; set; }
         public string ShortName {get; set;}
+        public virtual ICollection<UserClub> UserClubs { get; set; }
     }
 }
