@@ -15,7 +15,7 @@ const ClubDashboard: React.FC = () => {
   }, [loadClubs]);
 
   if (loadingInitial) {
-    return <LoadingComponent content="Loading Clubs...." />;
+    return <LoadingComponent content="Loading Clubs...."/>;
   }
   
   return (

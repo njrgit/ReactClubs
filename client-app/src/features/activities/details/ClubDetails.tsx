@@ -38,7 +38,7 @@ const ClubDetails: React.FC<RouteComponentProps<DetailsParams>> = ({match, histo
         <ClubDetailsChat/>
       </Grid.Column>
       <Grid.Column width={6}>
-        <ClubDetailsSidebar/>
+        <ClubDetailsSidebar attendees={club.attendees}/>
       </Grid.Column>
     </Grid>
   );

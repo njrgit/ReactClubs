@@ -60,7 +60,9 @@ const Clubs = {
     details: (id:string) => requests.get(`/clubs/${id}`),
     create: (club:IClub) => requests.post('/clubs',club),
     update: (club:IClub) => requests.put(`/clubs/${club.id}`,club),
-    delete: (id:string) => requests.del(`/clubs/${id}`)
+    delete: (id: string) => requests.del(`/clubs/${id}`),
+    attend: (id: string) => requests.post(`/clubs/${id}/attend`, {}),
+    unattend: (id: string) => requests.del(`/clubs/${id}/attend`)
 }
 
 const User = {

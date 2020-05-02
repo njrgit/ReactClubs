@@ -19,7 +19,7 @@ const validate  = combineValidators({
   name: isRequired({message: 'Name is required'}),
   leagueName: isRequired({message: 'League is required'}),
   stadiumName: isRequired({message: 'Stadium is required'}),
-  shortName: isRequired({message: 'Short Name is required'}),
+  //shortName: isRequired({message: 'Short Name is required'}),
   dateEstablished: isRequired({message: 'Date is required'}),
   time: isRequired({message: 'Time Name is required'})
 })

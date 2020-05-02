@@ -4,7 +4,11 @@ export interface IClub{
     leagueName : string;
     stadiumName : string;
     dateEstablished : Date; 
-    shortName :string
+    shortName: string;
+    isGoing: boolean;
+    isHost: boolean;
+    attendees: IAttendee[];
+
 }
 
 export interface IClubFormValues extends Partial<IClub>{
@@ -28,4 +32,11 @@ export class ClubFormValues implements IClubFormValues{
         
         Object.assign(this, init);
     }
+}
+
+export interface IAttendee{
+    username: string;
+    displayName: string;
+    image: string;
+    isHost: boolean;
 }

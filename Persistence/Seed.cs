@@ -27,14 +27,14 @@ namespace Persistence
           Id = "NAR",
           DisplayName = "Anthony",
           UserName = "anthony",
-          Email = "niro@test.com"
+          Email = "anthony@test.com"
           },
 
           new AppUser {
           Id = "NVR",
           DisplayName = "Nilesha",
           UserName = "nili",
-          Email = "niro@test.com"
+          Email = "nilesha@test.com"
           }
         };
 

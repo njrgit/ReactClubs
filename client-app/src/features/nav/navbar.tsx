@@ -3,7 +3,8 @@ import { Menu, Container, Button, Dropdown, Image } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { NavLink, Link } from "react-router-dom";
 import { RootStoreContext } from "../../app/stores/rootStore";
-
+import footballLogo from "../../app/Images/football.png";
+import userLogo from "../../app/Images/user.png";
 
 const NavBar: React.FC = () => {
   const rootStore = useContext(RootStoreContext);
@@ -14,7 +15,7 @@ const NavBar: React.FC = () => {
       <Container>
         <Menu.Item header as={NavLink} exact to="/">
           <img
-            src="/images/fooball.png"
+            src={footballLogo}
             alt="clubLogo"
             style={{ marginRight: 10 }}
           />
@@ -32,7 +33,7 @@ const NavBar: React.FC = () => {
         </Menu.Item>
         {user && (
           <Menu.Item position="right">
-            <Image avatar spaced="right" src={user.image || '../../app/Images/user.png'} />
+            <Image avatar spaced="right" src={userLogo} />
             <Dropdown pointing="top left" text={user.displayName}>
               <Dropdown.Menu>
                 <Dropdown.Item
