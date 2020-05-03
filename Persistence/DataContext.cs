@@ -10,6 +10,7 @@ namespace Persistence {
         public DbSet<Value> Values { get; set; }
         public DbSet<Club> Clubs { get; set; }
         public DbSet<UserClub> UserClubs { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating (ModelBuilder builder) {
             base.OnModelCreating (builder);
