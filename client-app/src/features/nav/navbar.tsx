@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { NavLink, Link } from "react-router-dom";
 import { RootStoreContext } from "../../app/stores/rootStore";
 import footballLogo from "../../app/Images/football.png";
-import userLogo from "../../app/Images/user.png";
 
 const NavBar: React.FC = () => {
   const rootStore = useContext(RootStoreContext);
@@ -33,12 +32,12 @@ const NavBar: React.FC = () => {
         </Menu.Item>
         {user && (
           <Menu.Item position="right">
-            <Image avatar spaced="right" src={userLogo} />
+            <Image avatar spaced="right" src={user.image} />
             <Dropdown pointing="top left" text={user.displayName}>
               <Dropdown.Menu>
                 <Dropdown.Item
                   as={Link}
-                  to={`/profile/username`}
+                  to={`/profile/${user.userName}`}
                   text="My profile"
                   icon="user"
                 />

@@ -15,10 +15,10 @@ const ClubListItem: React.FC<{ club: IClub }> = ({ club }) => {
       <Segment>
         <Item.Group>
         <Item key={club.id}>
-          <Item.Image size="tiny" circular src={clubCrests} />
+          <Item.Image size="tiny" circular src={clubCrests} style={{marginBottom:3}}/>
           <Item.Content>
               <Item.Header as="a">{club.name}</Item.Header>
-              <Item.Description>Manager : {manager.displayName}</Item.Description>
+              <Item.Description> Managed By <Link to={`profile/${manager.username}`}> {manager.displayName} </Link></Item.Description>
               {club.isHost && <Item.Description><Label basic color='orange' content='You are managing this' /></Item.Description>}
               {club.isGoing && !club.isHost && <Item.Description><Label basic color='green' content='You are not managing this, just watching' /></Item.Description>}
             <Item.Extra></Item.Extra>

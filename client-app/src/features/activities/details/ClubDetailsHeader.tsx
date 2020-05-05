@@ -24,7 +24,8 @@ const ClubDetailsHeader: React.FC<{ club: IClub }> = ({ club }) => {
 
   const rootStore = useContext(RootStoreContext);
 
-  const {attendClub,cancelClubAttendance, loading} = rootStore.clubStore;
+  const { attendClub, cancelClubAttendance, loading } = rootStore.clubStore;
+  const manager = club.attendees.filter(x => x.isHost)[0];
 
   return (
     <Segment.Group>
@@ -41,7 +42,10 @@ const ClubDetailsHeader: React.FC<{ club: IClub }> = ({ club }) => {
                 />
                 <p>{format(club.dateEstablished, "eeee do MMMM")}</p>
                 <p>
-                  Played at <strong>{club.stadiumName}</strong>
+                  Managed By{" "}
+                  <Link to={`/profile/${manager.username}`}>
+                    <strong>{manager.displayName}</strong>
+                  </Link>
                 </p>
               </Item.Content>
             </Item>
@@ -59,9 +63,13 @@ const ClubDetailsHeader: React.FC<{ club: IClub }> = ({ club }) => {
             Manage Event
           </Button>
         ) : club.isGoing ? (
-          <Button loading={loading} onClick={cancelClubAttendance}>Cancel attendance</Button>
+          <Button loading={loading} onClick={cancelClubAttendance}>
+            Cancel attendance
+          </Button>
         ) : (
-          <Button loading={loading} onClick={attendClub} color="teal">Join Activity</Button>
+          <Button loading={loading} onClick={attendClub} color="teal">
+            Join Activity
+          </Button>
         )}
       </Segment>
     </Segment.Group>
