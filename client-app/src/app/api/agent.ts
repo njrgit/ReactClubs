@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { IClub } from '../models/clubs';
+import { IClub, IProfileUpdateValues } from '../models/clubs';
 import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
@@ -82,6 +82,7 @@ const User = {
 
 const Profiles = {
     get: (username: string): Promise<IProfile> => requests.get(`/profiles/${username}`),
+    editProfile: (profileInformation : IProfileUpdateValues) => requests.put(`/profiles/editprofile`,profileInformation),
     uploadPhoto: (photo: Blob): Promise<IPhoto> => requests.postForm(`/photos`, photo),
     setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
     deletePhoto: (id:string) => requests.del(`/photos/${id}`)

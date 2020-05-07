@@ -57,6 +57,7 @@ const ClubForm: React.FC<RouteComponentProps<DetailParams>> = ({
   //   setClub({ ...club, [name]: value });
   // };
 
+  //This handles when the form is submitted
   const handleFinalFormSubmit = (values: any) => {
     const dateTime = combineDateAndTime(values.dateEstablished, values.time);
     const { dateEstablished, time, ...club } = values;

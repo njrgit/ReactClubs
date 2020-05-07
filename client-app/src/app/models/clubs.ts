@@ -40,3 +40,9 @@ export interface IAttendee{
     image: string;
     isHost: boolean;
 }
+
+export interface IProfileUpdateValues
+{
+    displayName: string;
+    bio: string;
+}

@@ -3,6 +3,7 @@ import { observable, action, runInAction, computed } from "mobx";
 import { IProfile, IPhoto } from "../models/profile";
 import agent from "../api/agent";
 import { toast } from "react-toastify";
+import { IProfileUpdateValues } from "../models/clubs";
 
 export default class ProfileStore
 {
@@ -16,6 +17,9 @@ export default class ProfileStore
     @observable loadingProfile = true;
     @observable uploadingPhoto = false;
     @observable loading = false;
+
+    @observable loadingUpdatingProfileInformation = false;
+    @observable submittingUpdatedProfileInfoLoading = false;
 
     @computed get isCurrentUser()
     {
@@ -120,6 +124,30 @@ export default class ProfileStore
             toast.error("Problem Deleting the Photo");
             runInAction(() => {
                 this.loading = false;
+            })
+        }
+    }
+
+    @action updateProfileInformation = async (profileInformation: IProfileUpdateValues) =>
+    {
+        this.submittingUpdatedProfileInfoLoading = true;
+
+        try
+        {
+            await agent.Profiles.editProfile(profileInformation);
+            runInAction(() =>
+            {
+                this.profile!.displayName = profileInformation.displayName;
+                this.rootStore.userStore.user!.displayName = profileInformation.displayName;
+                this.profile!.bio = profileInformation.bio;
+                this.submittingUpdatedProfileInfoLoading = false;
+            })
+            
+        } catch (error) {
+            toast.error("Problem Updating Profile Information");
+            runInAction(() =>
+            {
+                this.submittingUpdatedProfileInfoLoading = false;
             })
         }
     }
