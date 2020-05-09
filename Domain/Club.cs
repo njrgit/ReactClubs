@@ -12,5 +12,6 @@ namespace Domain
         public DateTime DateEstablished { get; set; }
         public string ShortName {get; set;}
         public virtual ICollection<UserClub> UserClubs { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

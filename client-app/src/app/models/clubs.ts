@@ -8,7 +8,18 @@ export interface IClub{
     isGoing: boolean;
     isHost: boolean;
     attendees: IAttendee[];
+    comments: IComment[];
 
+}
+
+export interface IComment
+{
+    id: string;
+    createdAtTime: Date;
+    body: string;
+    userName: string;
+    displayName: string;
+    image: string;
 }
 
 export interface IClubFormValues extends Partial<IClub>{

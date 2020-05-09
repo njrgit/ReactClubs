@@ -1,3 +1,6 @@
+using System.Collections.Immutable;
+using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using System.Text;
 using Application.Clubs;
 using Application.Interfaces;
@@ -20,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
-
+using API.SignalR;
 
 namespace API
 {
@@ -51,13 +54,15 @@ namespace API
             });
 
             services.AddCors (opt => {
-                opt.AddPolicy ("CorsPolicy,", policy => {
-                    policy.AllowAnyHeader ().AllowAnyMethod ().WithOrigins ("http://localhost:3000");
+                opt.AddPolicy (name:"NewCorsPolicy", policy => {
+                    policy.AllowAnyHeader ().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
                 });
             });
 
             services.AddMediatR (typeof (List.Handler).Assembly);
             services.AddAutoMapper(typeof(List.Handler));
+
+            services.AddSignalR(); 
 
             var builder = services.AddIdentityCore<AppUser> ();
 
@@ -86,6 +91,25 @@ namespace API
                     ValidateAudience = false,
                     ValidateIssuer = false
                     };
+
+                    opt.Events = new JwtBearerEvents
+                    {
+
+                        OnMessageReceived = context =>
+                        {
+
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+                            {
+
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddScoped<IJwtGenerator, JwtGenerator> ();
@@ -106,15 +130,15 @@ namespace API
             // app.UseHttpsRedirection();
 
             app.UseRouting ();
-                app.UseCors (builder => builder.WithOrigins ("http://localhost:3000")
-                .AllowAnyMethod ()
-                .WithHeaders ("authorization", "accept", "content-type", "origin"));
+            
+            app.UseCors("NewCorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization ();
 
             app.UseEndpoints (endpoints => {
                 endpoints.MapControllers ();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

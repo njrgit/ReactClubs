@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using Domain;
 using System.Text.Json.Serialization;
+using Application.Comments;
 
-namespace Application.Clubs {
-    public class ClubDto {
+namespace Application.Clubs
+{
+    public class ClubDto
+    {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string LeagueName { get; set; }
@@ -14,6 +17,7 @@ namespace Application.Clubs {
         public string ShortName { get; set; }
 
         [JsonPropertyName("attendees")]
-        public ICollection<AttendeeDto> UserClubs {get; set;}
+        public ICollection<AttendeeDto> UserClubs { get; set; }
+        public ICollection<CommentsDto> Comments { get; set; }
     }
 }
