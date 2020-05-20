@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers {
     public class ClubsController : BaseController {
+
         [HttpGet]
-        public async Task<ActionResult<List<ClubDto>>> List () {
-            return await Mediator.Send (new List.Query ());
+        public async Task<ActionResult<List.ClubEnvelope>> List (int? limit, int? offset, bool isGoing, bool isHost, DateTime? startDateTime) {
+            return await Mediator.Send (new List.Query (limit, offset, isGoing, isHost, startDateTime));
         }
 
         [HttpGet ("{id}")]

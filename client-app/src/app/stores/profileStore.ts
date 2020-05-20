@@ -1,6 +1,6 @@
 import { RootStore } from "./rootStore";
 import { observable, action, runInAction, computed, reaction } from "mobx";
-import { IProfile, IPhoto } from "../models/profile";
+import { IProfile, IPhoto, IUserClub } from "../models/profile";
 import agent from "../api/agent";
 import { toast } from "react-toastify";
 import { IProfileUpdateValues } from "../models/clubs";
@@ -37,6 +37,28 @@ export default class ProfileStore
 
     @observable loadingUpdatingProfileInformation = false;
     @observable submittingUpdatedProfileInfoLoading = false;
+
+    @observable userClubs: IUserClub[] = []
+    @observable loadingUserClubs = false;
+    
+    @action loadUserClubs = async (username: string, predicate? :string) =>
+    {
+        this.loadingUserClubs = true;
+
+        try {
+            const usersClubs = await agent.Profiles.listClubs(username, predicate!);
+            runInAction(()=> {
+                this.userClubs = usersClubs;
+                this.loadingUserClubs = false;
+            })
+        } catch (error) {
+            toast.error("Problem Loading User Clubs");
+            runInAction(() =>
+            {
+                this.loadingUserClubs = false
+            })
+        };
+    }
 
     @computed get isCurrentUser()
     {

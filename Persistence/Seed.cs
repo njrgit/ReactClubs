@@ -52,7 +52,7 @@ namespace Persistence
           Name = "Liverpool",
           LeagueName = "Premier League",
           StadiumName = "Anfield",
-          DateEstablished = DateTime.Now.AddYears (-100),
+          DateEstablished = DateTime.Now.AddMonths (10),
           UserClubs = new List<UserClub> {
           new UserClub {
           AppUserId = "NJR",
@@ -70,7 +70,7 @@ namespace Persistence
           Name = "Man City",
           LeagueName = "Premier League",
           StadiumName = "Eithad",
-          DateEstablished = DateTime.Now.AddYears (-80),
+          DateEstablished = DateTime.Now.AddMonths (10),
                     UserClubs = new List<UserClub> {
           new UserClub {
           AppUserId = "NJR",

@@ -1,4 +1,11 @@
-export interface IClub{
+export interface IClubEnvelope
+{
+    clubs: IClub[];
+    clubCount: number;
+}
+
+export interface IClub
+{
     id: string;
     name: string;
     leagueName : string;

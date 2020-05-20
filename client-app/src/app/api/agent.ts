@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { IClub, IProfileUpdateValues } from '../models/clubs';
+import { IClub, IProfileUpdateValues, IClubEnvelope } from '../models/clubs';
 import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
@@ -65,7 +65,7 @@ const requests ={
 }
 
 const Clubs = {
-    list: (): Promise<IClub []> => requests.get('/clubs'),
+    list: (params: URLSearchParams): Promise<IClubEnvelope> => axios.get('/clubs', {params:params}).then(sleep(1000)).then(responseBody),
     details: (id:string) => requests.get(`/clubs/${id}`),
     create: (club:IClub) => requests.post('/clubs',club),
     update: (club:IClub) => requests.put(`/clubs/${club.id}`,club),
@@ -88,7 +88,8 @@ const Profiles = {
     deletePhoto: (id:string) => requests.del(`/photos/${id}`),
     follow: (username:string) => requests.post(`/profiles/${username}/follow`,{}),
     unfollow: (username: string) => requests.del(`/profiles/${username}/unfollow`),
-    listFollowings: (username: string, predicate:string) => requests.get(`/profiles/${username}/follow?predicate=${predicate}`)
+    listFollowings: (username: string, predicate:string) => requests.get(`/profiles/${username}/follow?predicate=${predicate}`),
+    listClubs: (username: string, predicate:string) => requests.get(`/profiles/${username}/clubs?predicate=${predicate}`)
 }
 
 

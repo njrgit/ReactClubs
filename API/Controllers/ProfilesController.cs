@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Application.Profiles;
@@ -18,6 +19,12 @@ namespace API.Controllers
         public async Task<ActionResult<Unit>> Edit([FromBody]EditProfile.Command editProfile)
         {
             return await Mediator.Send(editProfile);
+        }
+
+        [HttpGet("{username}/clubs")]
+        public async Task<ActionResult<List<UserClubDto>>> GetUserClubs(string username, string predicate)
+        {
+            return await Mediator.Send(new ListClubs.Query { Username = username, Predicate = predicate });
         }
 
     }
