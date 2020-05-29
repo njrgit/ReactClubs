@@ -6,7 +6,9 @@ import { RootStoreContext } from "../../app/stores/rootStore";
 import LoginForm from "../user/LoginForm";
 import RegisterForm from "../user/RegisterForm";
 
-export const HomePage = () => {
+export const HomePage = () =>
+{
+  const token = window.localStorage.getItem('jwt');
   const rootStore = useContext(RootStoreContext);
   const { isLoggedIn, user } = rootStore.userStore;
   const{openModal} = rootStore.modalStore;
@@ -23,7 +25,7 @@ export const HomePage = () => {
           />
           Clubs
         </Header>
-        {isLoggedIn && user ? (
+        {isLoggedIn && user && token ? (
           <Fragment>
             <Header
               as="h2"
