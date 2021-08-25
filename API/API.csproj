@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.3"/>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.2.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.0.3"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18"/>
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0"/>
   </ItemGroup>
 </Project>
